@@ -819,6 +819,7 @@
       <a href="#experience" data-section="experience">experience</a>
       <a href="#work" data-section="work">work</a>
       <a href="#certifications" data-section="certifications">certifications</a>
+      <a href="#resume" data-section="resume">resume</a>
       <a href="#skills" data-section="skills">skills</a>
       <a href="#contact" data-section="contact">contact</a>
     </div>
@@ -1035,6 +1036,32 @@
     </div>
   </section>
 
+  <!-- RESUME SECTION -->
+  <section id="resume" class="reveal">
+    <div class="resume-section">
+      <div class="resume-content">
+        <div class="resume-text">
+          <h3>Download My Resume</h3>
+          <p>
+            Get a comprehensive overview of my professional background, technical skills, 
+            project experience, and educational credentials in a single PDF document.
+          </p>
+          <div class="resume-actions">
+            <button class="btn-primary" onclick="downloadResume()">
+              Download Resume (PDF)
+            </button>
+            <a href="https://www.linkedin.com/in/tobiloba-sadiku-a45784299/" target="_blank" class="btn-outline">
+              View LinkedIn Profile
+            </a>
+          </div>
+        </div>
+        <div style="font-size: 4rem; text-align: center; opacity: 0.2;">
+          📋
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- SKILLS -->
   <section id="skills" class="reveal">
     <h2>Technical Expertise</h2>
@@ -1075,6 +1102,11 @@
 </div>
 
 <script>
+  // Download resume function
+  function downloadResume() {
+    window.open('resume.pdf', '_blank');
+  }
+
   (function() {
     // Staggered reveal on scroll
     const reveals = document.querySelectorAll('.reveal');
