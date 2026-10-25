@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sadiku Oluwatobiloba, backend developer in Lagos. Python, Node.js, PHP, MySQL, REST APIs. Live project: HomeEase." />
+  <title>Sadiku Oluwatobiloba · Backend Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
+    :root {
+      /* Surfaces: graphite layers */
+      --bg: #0d0f12;
+      --surface-1: #14171c;
+      --surface-2: #1b1f26;
+      --surface-3: #232831;
+      --line: #2a303a;
+      --line-strong: #3a4250;
+
+      /* Text */
+      --text: #ece9e2;
+      --text-2: #a9b0bb;
+      --text-3: #7a828f;
+
+      /* Accent: restrained mint, used sparingly */
+      --accent: #8fd9b6;
+      --accent-ink: #0d0f12;
+      --accent-dim: rgba(143, 217, 182, 0.12);
+
+      /* Type */
+      --font-display: "Newsreader", Georgia, serif;
+      --font-body: "Inter", system-ui, -apple-system, sans-serif;
+
+      /* Space scale */
+      --s1: 0.5rem;
+      --s2: 1rem;
+      --s3: 1.5rem;
+      --s4: 2rem;
+      --s5: 3rem;
+      --s6: 4.5rem;
+      --s7: 6rem;
+
+      /* Radii */
+      --r-sm: 4px;
+      --r-md: 8px;
+
+      /* Motion */
+      --dur-fast: 180ms;
+      --dur-base: 420ms;
+      --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+      /* Layout */
+      --measure: 62ch;
+      --wrap: 1120px;
+    }
+
+    /* ============================================================
+       BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    img { max-width: 100%; display: block; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: var(--r-sm);
+    }
+
+    .wrap {
+      max-width: var(--wrap);
+      margin: 0 auto;
+      padding: 0 var(--s4);
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      color: var(--text);
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 4.6rem);
+      line-height: 1.02;
+    }
+
+    h2 {
+      font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    h3 {
+      font-size: 1.35rem;
+      line-height: 1.3;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .lede {
+      font-size: 1.12rem;
+      color: var(--text-2);
+      max-width: var(--measure);
+    }
+
+    .muted { color: var(--text-2); }
+
+    /* ============================================================
+       SECTION SCAFFOLD
+       ============================================================ */
+    .section {
+      padding: var(--s7) 0 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: var(--s4);
+      align-items: start;
+      margin-bottom: var(--s5);
+    }
+
+    .section-head .eyebrow {
+      padding-top: 0.7rem;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    @media (max-width: 760px) {
+      .section-head { grid-template-columns: 1fr; gap: var(--s2); }
+      .section-head .eyebrow { padding-top: var(--s2); }
+    }
+
+    /* ============================================================
+       NAVIGATION
+       ============================================================ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(13, 15, 18, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--dur-base) var(--ease-out);
+    }
+
+    .site-header.scrolled { border-bottom-color: var(--line); }
+
+    .site-header .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s3);
+      height: 64px;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: var(--s3);
+      list-style: none;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a {
+      position: relative;
+      color: var(--text-2);
+      padding: 0.35rem 0;
+      transition: color var(--dur-fast) ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: -2px;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+
+    .nav-links a:hover,
+    .nav-links a[aria-current="true"] { color: var(--text); }
+
+    .nav-links a[aria-current="true"]::after,
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      border-radius: var(--r-sm);
+      padding: 0.45rem 0.8rem;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .nav-toggle { display: inline-block; }
+      .nav-links {
+        position: absolute;
+        top: 64px; left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: var(--surface-1);
+        border-bottom: 1px solid var(--line);
+        padding: var(--s2) var(--s4);
+        display: none;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { display: block; padding: 0.75rem 0; }
+    }
+
+    .progress {
+      position: absolute;
+      left: 0; bottom: -1px;
+      height: 1px;
+      width: 100%;
+      background: var(--accent);
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      padding: var(--s7) 0 var(--s6);
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: var(--s6);
+      align-items: end;
+    }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; gap: var(--s5); padding-top: var(--s6); }
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s1);
+      font-size: 0.85rem;
+      color: var(--text-2);
+      margin-bottom: var(--s3);
+    }
+
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(143, 217, 182, 0.6);
+      animation: pulse 2.6s var(--ease-out) infinite;
+    }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(143, 217, 182, 0.55); }
+      70%  { box-shadow: 0 0 0 8px rgba(143, 217, 182, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(143, 217, 182, 0); }
+    }
+
+    .hero h1 { margin-bottom: var(--s3); }
+
+    .hero .role {
+      font-size: 1.15rem;
+      color: var(--text-2);
+      margin-bottom: var(--s3);
+    }
+
+    .hero .lede { margin-bottom: var(--s4); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s2);
+      margin-bottom: var(--s4);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.8rem 1.25rem;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      background: transparent;
+      cursor: pointer;
+      transition:
+        background-color var(--dur-fast) ease,
+        border-color var(--dur-fast) ease,
+        color var(--dur-fast) ease,
+        transform var(--dur-fast) var(--ease-out);
+    }
+
+    .btn .arrow {
+      display: inline-block;
+      transition: transform var(--dur-base) var(--ease-out);
+    }
+
+    .btn:hover { border-color: var(--text-2); }
+    .btn:hover .arrow { transform: translateX(4px); }
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: #a7e6c9;
+      border-color: #a7e6c9;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s3);
+      font-size: 0.92rem;
+    }
+
+    .links a {
+      color: var(--text-2);
+      border-bottom: 1px solid var(--line-strong);
+      padding-bottom: 2px;
+      transition: color var(--dur-fast) ease, border-color var(--dur-fast) ease;
+    }
+
+    .links a:hover { color: var(--text); border-color: var(--accent); }
+
+    .portrait {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: var(--r-md);
+      overflow: hidden;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+    }
+
+    .portrait-caption {
+      position: absolute;
+      left: var(--s2); bottom: var(--s2);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: rgba(13, 15, 18, 0.7);
+      padding: 0.35rem 0.6rem;
+      border-radius: var(--r-sm);
+    }
+
+    /* Entrance motion */
+    .rise {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise var(--dur-base) var(--ease-out) forwards;
+      animation-delay: var(--d, 0ms);
+    }
+
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll reveal: content stays visible unless JS adds .js-reveal */
+    .js-reveal .reveal-target {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+      transition-delay: var(--d, 0ms);
+    }
+
+    .js-reveal .reveal-target.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       ABOUT
+       ============================================================ */
+    .about-body {
+      display: grid;
+      gap: var(--s3);
+      max-width: var(--measure);
+    }
+
+    .about-body p { color: var(--text-2); font-size: 1.05rem; }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--s3);
+      margin-top: var(--s5);
+      border-top: 1px solid var(--line);
+      padding-top: var(--s4);
+    }
+
+    .fact .num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: var(--s1);
+    }
+
+    .fact .label { font-size: 0.88rem; color: var(--text-3); }
+
+    @media (max-width: 640px) {
+      .facts { grid-template-columns: 1fr; }
+    }
+
+    /* ============================================================
+       EXPERIENCE (timeline-style list, dates scannable)
+       ============================================================ */
+    .timeline {
+      list-style: none;
+      border-left: 1px solid var(--line-strong);
+      margin-left: var(--s1);
+    }
+
+    .timeline li {
+      position: relative;
+      padding: 0 0 var(--s5) var(--s5);
+    }
+
+    .timeline li:last-child { padding-bottom: 0; }
+
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: -5px; top: 0.55rem;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--text-3);
+      transition: border-color var(--dur-base) ease, background-color var(--dur-base) ease;
+    }
+
+    .timeline li:hover::before {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .role-date {
+      font-size: 0.85rem;
+      color: var(--text-3);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 0.25rem;
+    }
+
+    .role-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      line-height: 1.25;
+      margin-bottom: 0.2rem;
+    }
+
+    .role-org {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      margin-bottom: var(--s2);
+    }
+
+    .role-list {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+      max-width: var(--measure);
+    }
+
+    .role-list li {
+      position: static;
+      padding: 0;
+      color: var(--text-2);
+      font-size: 0.98rem;
+    }
+
+    .role-list li::before { display: none; }
+
+    .role-list li::marker { color: var(--text-3); }
+
+    .role-list {
+      padding-left: 1.1rem;
+      list-style: disc;
+    }
+
+    .stack {
+      margin-top: var(--s2);
+      font-size: 0.85rem;
+      color: var(--text-3);
+    }
+
+    /* ============================================================
+       PROJECTS (case-study previews)
+       ============================================================ */
+    .case {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      background: var(--surface-1);
+      transition: border-color var(--dur-base) ease, transform var(--dur-base) var(--ease-out);
+    }
+
+    .case:hover {
+      border-color: var(--line-strong);
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 860px) {
+      .case { grid-template-columns: 1fr; }
+    }
+
+    .case-body { padding: var(--s5); display: grid; gap: var(--s3); align-content: start; }
+
+    .case-body h3 {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      line-height: 1.1;
+    }
+
+    .case-body .problem { color: var(--text-2); max-width: var(--measure); }
+
+    .case-points {
+      list-style: none;
+      display: grid;
+      gap: 0.55rem;
+      color: var(--text-2);
+      font-size: 0.96rem;
+      max-width: var(--measure);
+    }
+
+    .case-points li {
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .case-points li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0.7em;
+      width: 6px; height: 1px;
+      background: var(--accent);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.5rem;
+      list-style: none;
+    }
+
+    .tags li {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      padding: 0.2rem 0.55rem;
+    }
+
+    .case-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s2) var(--s3);
+      align-items: center;
+      font-size: 0.9rem;
+      margin-top: var(--s1);
+    }
+
+    .status-live { color: var(--accent); font-weight: 500; }
+
+    .case-visual {
+      position: relative;
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 36px,
+        linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 36px 100%,
+        var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      padding: var(--s5);
+    }
+
+    .case-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(13, 15, 18, 0.5));
+      pointer-events: none;
+    }
+
+    .case-wordmark {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5vw, 3.6rem);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .case-wordmark small {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: var(--s2);
+    }
+
+    .arrow-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+      font-weight: 500;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 2px;
+      width: fit-content;
+    }
+
+    .arrow-link .arrow { transition: transform var(--dur-base) var(--ease-out); }
+    .arrow-link:hover .arrow { transform: translateX(4px); }
+
+    /* ============================================================
+       CERTIFICATIONS
+       ============================================================ */
+    .cert-intro {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--s2) var(--s4);
+      margin-bottom: var(--s4);
+    }
+
+    .cert-count {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--text-2);
+    }
+
+    .cert-count strong { color: var(--text); font-weight: 500; font-size: 1.6rem; }
+
+    .cert-grid {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--s2);
+    }
+
+    .cert {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--s3);
+      min-height: 150px;
+      padding: var(--s3);
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      transition:
+        border-color var(--dur-base) ease,
+        background-color var(--dur-base) ease,
+        transform var(--dur-base) var(--ease-out);
+    }
+
+    .cert:hover,
+    .cert:focus-within {
+      border-color: var(--line-strong);
+      background: var(--surface-2);
+      transform: translateY(-2px);
+    }
+
+    .cert-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s2);
+    }
+
+    .cert-index {
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-3);
+      letter-spacing: 0.08em;
+    }
+
+    .cert-mark {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1px solid var(--text-3);
+      transition: background-color var(--dur-base) ease, border-color var(--dur-base) ease;
+    }
+
+    .cert:hover .cert-mark { background: var(--accent); border-color: var(--accent); }
+
+    .cert-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    .cert-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s2);
+      font-size: 0.85rem;
+      color: var(--text-3);
+    }
+
+    .verify {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-2);
+      font-weight: 500;
+      transition: color var(--dur-fast) ease;
+    }
+
+    .verify .arrow { transition: transform var(--dur-base) var(--ease-out); }
+    .verify:hover { color: var(--accent); }
+    .verify:hover .arrow { transform: translate(2px, -2px); }
+
+    /* The stretched link makes the whole card clickable without nesting interactive elements */
+    .cert-link::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: var(--r-md);
+    }
+
+    .cert-more {
+      margin-top: var(--s4);
+      display: flex;
+      align-items: center;
+      gap: var(--s3);
+      flex-wrap: wrap;
+    }
+
+    .cert-hidden[hidden] { display: none; }
+
+    .cert-note {
+      font-size: 0.85rem;
+      color: var(--text-3);
+    }
+
+    /* ============================================================
+       SKILLS
+       ============================================================ */
+    .skill-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s5) var(--s6);
+    }
+
+    @media (max-width: 760px) {
+      .skill-groups { grid-template-columns: 1fr; }
+    }
+
+    .skill-group h3 {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: var(--s2);
+    }
+
+    .skill-group ul {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .skill-group li {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--s2);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+    }
+
+    .skill-group li span { color: var(--text-3); font-size: 0.9rem; text-align: right; }
+
+    /* ============================================================
+       CV & CONTACT
+       ============================================================ */
+    .closing {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--s5);
+      padding: var(--s5) 0 var(--s6);
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 760px) {
+      .closing { grid-template-columns: 1fr; }
+    }
+
+    .closing h2 { margin-bottom: var(--s3); }
+
+    .closing .lede { margin-bottom: var(--s4); }
+
+    .email-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--s2);
+      margin-bottom: var(--s4);
+    }
+
+    .email {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+      color: var(--text);
+      border-bottom: 1px solid var(--line-strong);
+      padding-bottom: 2px;
+      word-break: break-all;
+    }
+
+    .email:hover { border-color: var(--accent); }
+
+    .copy-btn {
+      font: inherit;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      background: transparent;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      padding: 0.4rem 0.7rem;
+      cursor: pointer;
+      transition: color var(--dur-fast) ease, border-color var(--dur-fast) ease;
+    }
+
+    .copy-btn:hover { color: var(--text); border-color: var(--text-2); }
+
+    .copy-status {
+      min-height: 1.2em;
+      font-size: 0.88rem;
+      color: var(--accent);
+      margin-top: calc(var(--s1) * -1);
+      margin-bottom: var(--s3);
+    }
+
+    .copy-status.error { color: #f0a08a; }
+
+    .CV-card {
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      background: var(--surface-1);
+      padding: var(--s4);
+      display: grid;
+      gap: var(--s3);
+      align-content: start;
+    }
+
+    .CV-card p { color: var(--text-2); }
+
+    .CV-card .actions { margin: 0; }
+
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--s2) var(--s4);
+      padding: var(--s4) 0 var(--s5);
+      border-top: 1px solid var(--line);
+      font-size: 0.85rem;
+      color: var(--text-3);
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        transition-delay: 0ms !important;
+      }
+      .js-reveal .reveal-target { opacity: 1; transform: none; }
+      .rise { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="sr-only">Skip to content</a>
+
+<header class="site-header" id="top">
+  <div class="wrap">
+    <a href="#top" class="brand" aria-label="Back to top">Sadiku O.</a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+
+    <nav aria-label="Primary">
+      <ul class="nav-links" id="site-nav">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#work">Projects</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <div>
+      <p class="status rise" style="--d: 0ms">
+        <span class="status-dot" aria-hidden="true"></span>
+        Open to backend developer roles in Lagos
+      </p>
+      <h1 id="hero-title" class="rise" style="--d: 60ms">Sadiku<br>Oluwatobiloba</h1>
+      <p class="role rise" style="--d: 120ms">Backend developer. Python, Node.js, and database-driven APIs.</p>
+      <p class="lede rise" style="--d: 180ms">
+        I design and build backend systems: REST APIs, database schemas, and deployed services.
+        I have shipped a live booking platform and am now deepening my work in AI integration.
+      </p>
+      <div class="actions rise" style="--d: 240ms">
+        <a href="#work" class="btn btn-primary">View projects <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="#contact" class="btn">Get in touch</a>
+      </div>
+      <div class="links rise" style="--d: 300ms">
+        <a href="https://github.com/tobiloba233" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/in/tobiloba-sadiku-a45784299/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://tobiloba233.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      </div>
+    </div>
+
+    <figure class="portrait rise" style="--d: 120ms">
+      <img src="profile-photo.jpg" alt="Sadiku Oluwatobiloba in graduation attire, seated in a wooden armchair" width="774" height="1280" />
+      <figcaption class="portrait-caption">B.Sc. Computer Science, LASU</figcaption>
+    </figure>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="wrap section reveal-section" id="about" aria-labelledby="about-title">
+    <div class="section-head">
+      <p class="eyebrow">01 · About</p>
+      <div>
+        <h2 id="about-title" class="reveal-target">Background</h2>
+      </div>
+    </div>
+    <div class="about-body reveal-target">
+      <p>
+        I hold a Bachelor of Science in Computer Science from Lagos State University (4.16 CGPA, Second Class Upper Division).
+        My work centres on backend development in Python (FastAPI), Node.js, and PHP, with MySQL for data and REST APIs for
+        communication between services.
+      </p>
+      <p>
+        I care most about the parts of a system that users never see: schema design, query efficiency, input validation,
+        and deployments that keep working. I have also led student technology initiatives, including an e-voting system
+        rollout and a school tech conference.
+      </p>
+      <p>
+        Alongside my core work I am building practical experience with AI tooling. I hold 23 professional certifications,
+        mostly from Anthropic, covering the Claude API, Model Context Protocol, agent workflows, and AI fluency.
+      </p>
+    </div>
+    <dl class="facts reveal-target">
+      <div class="fact"><dt class="sr-only">Professional certifications</dt><dd><p class="num">23</p><p class="label">Professional certifications</p></dd></div>
+      <div class="fact"><dt class="sr-only">Live production project</dt><dd><p class="num">1</p><p class="label">Live production project (HomeEase)</p></dd></div>
+      <div class="fact"><dt class="sr-only">Degree</dt><dd><p class="num">4.16</p><p class="label">CGPA, B.Sc. Computer Science</p></dd></div>
+    </dl>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="wrap section reveal-section" id="experience" aria-labelledby="exp-title">
+    <div class="section-head">
+      <p class="eyebrow">02 · Experience</p>
+      <div>
+        <h2 id="exp-title" class="reveal-target">Work and leadership</h2>
+      </div>
+    </div>
+    <ol class="timeline">
+      <li class="reveal-target">
+        <p class="role-date">2025 to 2026</p>
+        <h3 class="role-title">HomeEase, Booking Platform</h3>
+        <p class="role-org">Final year project</p>
+        <ul class="role-list">
+          <li>Designed the full-stack architecture, from API to database to frontend.</li>
+          <li>Built RESTful endpoints for authentication, bookings, and provider management.</li>
+          <li>Structured the MySQL schema for normalized relationships and query efficiency.</li>
+          <li>Deployed to Render with a CI/CD pipeline. Live at homeease-client.onrender.com.</li>
+        </ul>
+        <p class="stack">Node.js · Express · MySQL · HTML/CSS · JavaScript</p>
+      </li>
+      <li class="reveal-target">
+        <p class="role-date">2024</p>
+        <h3 class="role-title">TechConnect, Tutor Matching App</h3>
+        <p class="role-org">SIWES industrial training</p>
+        <ul class="role-list">
+          <li>Built user account roles for tutors and students.</li>
+          <li>Implemented the tutor matching and search logic, plus profile management.</li>
+          <li>Shipped features under workplace deadlines with supervision.</li>
+        </ul>
+        <p class="stack">Python · Flask · MySQL · HTML/CSS · JavaScript</p>
+      </li>
+      <li class="reveal-target">
+        <p class="role-date">2023 to 2026</p>
+        <h3 class="role-title">Student leadership</h3>
+        <p class="role-org">Departmental governance and community events</p>
+        <ul class="role-list">
+          <li>Led the rollout of an e-voting system, serving as Clerk and Deputy Speaker.</li>
+          <li>Co-organised a school tech conference with the Speaker.</li>
+          <li>Held roles including Speaker, Deputy Speaker, Honourable Member, Clerk, and Secretary.</li>
+        </ul>
+      </li>
+    </ol>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="wrap section reveal-section" id="work" aria-labelledby="work-title">
+    <div class="section-head">
+      <p class="eyebrow">03 · Projects</p>
+      <div>
+        <h2 id="work-title" class="reveal-target">Selected work</h2>
+      </div>
+    </div>
+
+    <article class="case reveal-target" aria-labelledby="homeease-title">
+      <div class="case-body">
+        <p class="eyebrow">Deployed · 2026</p>
+        <h3 id="homeease-title">HomeEase</h3>
+        <p class="problem">
+          Finding a reliable household service provider is hard. HomeEase connects customers with local
+          professionals for plumbing, electrical work, cleaning, and repairs, with booking in one place.
+        </p>
+        <ul class="case-points">
+          <li>Full-stack platform: provider and customer flows, service listings, and booking.</li>
+          <li>RESTful backend with authentication and provider profile management.</li>
+          <li>Normalized MySQL schema, with optimized queries and session handling.</li>
+          <li>Deployed to production on Render.</li>
+        </ul>
+        <ul class="tags" aria-label="Technologies used">
+          <li>Node.js</li><li>Express</li><li>MySQL</li><li>HTML/CSS</li><li>JavaScript</li>
+        </ul>
+        <div class="case-meta">
+          <span class="status-live">● Live</span>
+          <a class="arrow-link" href="https://homeease-client.onrender.com" target="_blank" rel="noopener noreferrer">
+            Open live demo <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+      <div class="case-visual" aria-hidden="true">
+        <p class="case-wordmark">HomeEase<small>Household services, booked</small></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section class="wrap section reveal-section" id="certifications" aria-labelledby="cert-title">
+    <div class="section-head">
+      <p class="eyebrow">04 · Certifications</p>
+      <div>
+        <h2 id="cert-title" class="reveal-target">Continued learning</h2>
+      </div>
+    </div>
+
+    <div class="cert-intro reveal-target">
+      <p class="cert-count"><strong>23</strong> certifications, each linked to its verification page</p>
+      <p class="cert-note">Issued by Anthropic through Skilljar</p>
+    </div>
+
+    <ul class="cert-grid" id="certGrid">
+      <li class="cert reveal-target">
+        <div class="cert-top"><span class="cert-index">01</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Building with the Claude API</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/9dbx8m2snkj8" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert reveal-target">
+        <div class="cert-top"><span class="cert-index">02</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency Framework &amp; Foundations</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/rx8t577qyq8j" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert reveal-target">
+        <div class="cert-top"><span class="cert-index">03</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Claude Code in Action</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/9h3oqt84h5o6" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert reveal-target">
+        <div class="cert-top"><span class="cert-index">04</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Introduction to Claude Cowork</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/j8fskxevqo42" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert reveal-target">
+        <div class="cert-top"><span class="cert-index">05</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Claude Platform 101</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/mo4aqapphqc4" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert reveal-target">
+        <div class="cert-top"><span class="cert-index">06</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Claude Code 101</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/wwav7srg2vw8" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+
+      <!-- Hidden until "Show all" -->
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">07</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Claude 101</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/x9gtf3roxd38" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">08</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Model Context Protocol: Advanced Topics</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/igq9hivpz2uc" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">09</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for Students</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/7k6pxvbkgzt3" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">10</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for Educators</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/a57cdvegfi6y" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">11</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Introduction to MCP</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/dmebcacdddii" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">12</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Claude in Amazon Bedrock</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/j36hykpxdfvj" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">13</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Deploying Claude Enterprise with Confidence</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/ndhwdft2zeqj" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">14</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for Creative Work</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/794xndineyoq" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">15</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for K-12 Educators</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/2jpsytqzmv6s" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">16</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for Builders</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/2brzv5kxhbzt" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">17</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for Small Businesses</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/p9payqevxc2z" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">18</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Capabilities and Limitations</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/zsae6kenp9hy" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">19</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Introduction to Subagents</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/vtprtiwwbi3a" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">20</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Introduction to Agent Skills</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/junayegh8u8y" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">21</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">AI Fluency for Nonprofits</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/jzug7ne7zkez" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">22</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Teaching the AI Fluency Framework</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/ycbakm3z6iv2" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+      <li class="cert cert-hidden" hidden>
+        <div class="cert-top"><span class="cert-index">23</span><span class="cert-mark" aria-hidden="true"></span></div>
+        <p class="cert-name">Claude on Google Cloud</p>
+        <div class="cert-foot"><span>Anthropic</span><a class="verify cert-link" href="https://verify.skilljar.com/c/ngzsaawc2hqm" target="_blank" rel="noopener noreferrer">Verify <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a></div>
+      </li>
+    </ul>
+
+    <div class="cert-more">
+      <button class="btn" type="button" id="certToggle" aria-expanded="false" aria-controls="certGrid">
+        Show all 23 <span class="arrow" aria-hidden="true">↓</span>
+      </button>
+      <p class="cert-note" id="certNote">Showing 6 of 23</p>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="wrap section reveal-section" id="skills" aria-labelledby="skills-title">
+    <div class="section-head">
+      <p class="eyebrow">05 · Expertise</p>
+      <div>
+        <h2 id="skills-title" class="reveal-target">Technical expertise</h2>
+      </div>
+    </div>
+    <div class="skill-groups reveal-target">
+      <div class="skill-group">
+        <h3>Backend</h3>
+        <ul>
+          <li>Python <span>FastAPI</span></li>
+          <li>Node.js <span>Express</span></li>
+          <li>PHP <span>Server-side</span></li>
+          <li>REST API design <span>Endpoints, auth</span></li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h3>Data</h3>
+        <ul>
+          <li>MySQL <span>Schema design</span></li>
+          <li>Query optimization <span>Relational queries</span></li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h3>Frontend</h3>
+        <ul>
+          <li>HTML5 and CSS3 <span>Responsive layouts</span></li>
+          <li>JavaScript <span>DOM, events, async</span></li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h3>Tools and delivery</h3>
+        <ul>
+          <li>Git and GitHub <span>Version control</span></li>
+          <li>Render <span>Deployment</span></li>
+          <li>API testing <span>Debugging</span></li>
+          <li>Claude API <span>LLM integration</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CV + CONTACT -->
+  <section class="wrap section" id="contact" aria-labelledby="contact-title">
+    <div class="closing reveal-target">
+      <div>
+        <p class="eyebrow" style="margin-bottom: 1rem;">06 · Contact</p>
+        <h2 id="contact-title">Let's talk</h2>
+        <p class="lede">Open to backend roles, internships, and collaborations. The fastest way to reach me is email.</p>
+        <div class="email-row">
+          <a href="mailto:sadikutobiloba21@gmail.com" class="email" id="emailLink">sadikutobiloba21@gmail.com</a>
+          <button class="copy-btn" type="button" id="copyEmail">Copy email</button>
+        </div>
+        <p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
+        <div class="links">
+          <a href="https://github.com/tobiloba233" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/tobiloba-sadiku-a45784299/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </div>
+
+      <div class="CV-card">
+        <h3>CV</h3>
+        <p>A detailed summary of my education, projects, technical skills, and leadership work.</p>
+        <div class="actions">
+          <a href="SADIKU_OLUWATOBILOBA_CV.pdf" class="btn btn-primary" download>Download CV (PDF) <span class="arrow" aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap footer">
+    <span>© 2026 Sadiku Oluwatobiloba</span>
+    <span>Lagos, Nigeria</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var doc = document.documentElement;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Mobile nav ---------- */
+  var toggle = document.querySelector('.nav-toggle');
+  var navList = document.getElementById('site-nav');
+  if (toggle && navList) {
+    toggle.addEventListener('click', function () {
+      var open = navList.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    navList.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') {
+        navList.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navList.classList.contains('open')) {
+        navList.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+      }
+    });
+  }
+
+  /* ---------- Header state, progress bar, active section ---------- */
+  var header = document.querySelector('.site-header');
+  var progress = document.getElementById('progress');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+
+  function onScroll() {
+    var y = window.scrollY;
+    header.classList.toggle('scrolled', y > 8);
+    var max = doc.scrollHeight - window.innerHeight;
+    progress.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0) + ')';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  var ids = links.map(function (a) { return a.getAttribute('href').slice(1); });
+  var targets = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
+  if ('IntersectionObserver' in window && targets.length) {
+    var activeObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (a) {
+          a.setAttribute('aria-current', a.getAttribute('href') === '#' + entry.target.id ? 'true' : 'false');
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    targets.forEach(function (t) { activeObs.observe(t); });
+  }
+
+  /* ---------- Scroll reveal (only when JS runs; content is visible otherwise) ---------- */
+  var revealTargets = document.querySelectorAll('.reveal-target');
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    doc.classList.add('js-reveal');
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    // Stagger siblings within the same parent, capped so long lists don't drag
+    var byParent = new Map();
+    revealTargets.forEach(function (el) {
+      var p = el.parentElement;
+      var n = byParent.get(p) || 0;
+      el.style.setProperty('--d', Math.min(n, 4) * 80 + 'ms');
+      byParent.set(p, n + 1);
+      revealObs.observe(el);
+    });
+  }
+
+  /* ---------- Certifications: progressive disclosure ---------- */
+  var certToggle = document.getElementById('certToggle');
+  var certNote = document.getElementById('certNote');
+  var hiddenCerts = document.querySelectorAll('.cert-hidden');
+  var totalCerts = document.querySelectorAll('#certGrid .cert').length;
+  if (certToggle) {
+    certToggle.addEventListener('click', function () {
+      var expanded = certToggle.getAttribute('aria-expanded') === 'true';
+      var first = document.querySelector('#certGrid .cert');
+      var anchor = certToggle;
+      if (expanded) {
+        hiddenCerts.forEach(function (el) { el.hidden = true; });
+        certToggle.firstChild.textContent = 'Show all ' + totalCerts + ' ';
+        certToggle.setAttribute('aria-expanded', 'false');
+        certNote.textContent = 'Showing 6 of ' + totalCerts;
+        // Keep the visitor's place: return focus to the toggle they used
+        anchor.scrollIntoView({ block: 'nearest' });
+      } else {
+        hiddenCerts.forEach(function (el) { el.hidden = false; });
+        certToggle.firstChild.textContent = 'Show fewer ';
+        certToggle.setAttribute('aria-expanded', 'true');
+        certNote.textContent = 'Showing all ' + totalCerts;
+      }
+    });
+  }
+
+  /* ---------- Copy email with visible, accessible status ---------- */
+  var copyBtn = document.getElementById('copyEmail');
+  var copyStatus = document.getElementById('copyStatus');
+  var email = 'sadikutobiloba21@gmail.com';
+  function setStatus(msg, isError) {
+    copyStatus.textContent = msg;
+    copyStatus.classList.toggle('error', !!isError);
+    clearTimeout(setStatus._t);
+    setStatus._t = setTimeout(function () { copyStatus.textContent = ''; }, 3000);
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(email).then(
+          function () { setStatus('Email copied to clipboard.'); },
+          function () {
+            var ok = fallbackCopy(email);
+            setStatus(ok ? 'Email copied to clipboard.' : 'Could not copy. Please select the address instead.', !ok);
+          }
+        );
+      } else {
+        setStatus(fallbackCopy(email) ? 'Email copied to clipboard.' : 'Could not copy. Please select the address instead.', true);
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
